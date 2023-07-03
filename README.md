@@ -1,1 +1,1 @@
-# java-fullstack-app
+# java-react-counter
