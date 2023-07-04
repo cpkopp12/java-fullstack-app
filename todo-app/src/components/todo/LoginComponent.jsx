@@ -6,7 +6,6 @@ export default function LoginComponent() {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [showSuccessMessage, setShowSuccessMessage] = useState(false);
     const [showErrorMessage, setShowErrorMessage] = useState(false);
     const navigate = useNavigate();
 
@@ -21,22 +20,17 @@ export default function LoginComponent() {
     }
 
     function handleSubmit() {
-        if (username === 'cam' && password==='dummy') {
-            setShowSuccessMessage(true);
-            setShowErrorMessage(false);
+        if (authContext.login(username, password)) {
             navigate(`/welcome/${username}`);
-            authContext.setAuthenticated(true);
+            setShowErrorMessage(false);
         } else {
-            setShowSuccessMessage(false);
             setShowErrorMessage(true);
-            authContext.setAuthenticated(false);
         }
     }
 
     return (
         <div className="Login">
             <h1>Login to view your Todos</h1>
-            {showSuccessMessage && <div className="successMessage">Authenticated Successfully</div>}
             {showErrorMessage && <div className='errorMessage'>Authentication Failed. Please check your credentials.</div>}
             <div className="LoginForm">
                 <div>
