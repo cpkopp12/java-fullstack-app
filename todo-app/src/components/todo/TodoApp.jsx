@@ -5,15 +5,20 @@ import { useState } from 'react';
 export default function TodoApp() {
     return (
         <div className="TodoApp">
+            
             <BrowserRouter>
+                <HeaderComponent />
                 <Routes>
                     <Route path='/' element={<LoginComponent />}></Route>
                     <Route path='/login' element={<LoginComponent />}></Route>
                     <Route path='/welcome/:username' element={<WelcomeComponent />}></Route>
                     <Route path='/todos' element={<ListTodosComponent/>}></Route>
+                    <Route path='/logout' element={<LogoutComponent/>}></Route>
                     <Route path='*' element={<ErrorComponent />}></Route>
                 </Routes>
+                <FooterComponent />
             </BrowserRouter>
+            
         </div>
     )
 }
@@ -99,10 +104,10 @@ function ListTodosComponent() {
     ];
 
     return (
-        <div className="ListTodosComponent">
+        <div className="container">
             <h1>Stuff Todo</h1>
             <div>
-                <table>
+                <table className="table">
                     <thead>
                         <tr>
                             <td>id</td>
@@ -131,3 +136,48 @@ function ListTodosComponent() {
         </div>
     )
 }
+
+function HeaderComponent() {
+    return (
+        <header className="border-bottom border-light border-5 mb-5 p-2">
+        <div className="container">
+            <div className="row">
+                <nav className="navbar navbar-expand-lg">
+                    <div className="collapse navbar-collapse">
+                        <ul className="navbar-nav">
+                            <li className="nav-item fs-5"><Link className="nav-link" to="/welcome/in28minutes">Home</Link></li>
+                            <li className="nav-item fs-5"><Link className="nav-link" to="/todos">Todos</Link></li>
+                        </ul>
+                    </div>
+                    <ul className="navbar-nav">
+                        <li className="nav-item fs-5"><Link className="nav-link" to="/login">Login</Link></li>
+                        <li className="nav-item fs-5"><Link className="nav-link" to="/logout">Logout</Link></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    )
+}
+
+function FooterComponent() {
+    return (
+        <footer className="footer">
+            <div className='container'>
+                Footer
+            </div>
+        </footer>
+    )
+}
+
+function LogoutComponent() {
+    return (
+        <div className="ErrorComponent">
+            <h1>You are logged out!</h1>
+            <div>Thanks for using the app!</div>
+        </div>
+    )
+}
+
+
