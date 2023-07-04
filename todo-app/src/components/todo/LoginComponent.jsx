@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from './security/AuthContext';
 
 export default function LoginComponent() {
 
@@ -8,6 +9,8 @@ export default function LoginComponent() {
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
     const [showErrorMessage, setShowErrorMessage] = useState(false);
     const navigate = useNavigate();
+
+    const authContext = useAuth();
 
     function handleUsernameChange(event) {
         setUsername(event.target.value);
@@ -21,10 +24,12 @@ export default function LoginComponent() {
         if (username === 'cam' && password==='dummy') {
             setShowSuccessMessage(true);
             setShowErrorMessage(false);
-            navigate(`/welcome/${username}`)
+            navigate(`/welcome/${username}`);
+            authContext.setAuthenticated(true);
         } else {
             setShowSuccessMessage(false);
             setShowErrorMessage(true);
+            authContext.setAuthenticated(false);
         }
     }
 
