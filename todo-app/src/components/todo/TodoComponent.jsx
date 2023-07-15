@@ -1,5 +1,5 @@
-import { useParams } from "react-router-dom"
-import { retrieveTodoApi } from "./api/TodoApiService";
+import { useNavigate, useParams } from "react-router-dom"
+import { retrieveTodoApi, updateTodoApi } from "./api/TodoApiService";
 import { useAuth } from './security/AuthContext';
 import { useEffect, useState } from "react";
 
@@ -14,6 +14,8 @@ export default function TodoComponent() {
 
     const authContext = useAuth();
 
+    const navigate = useNavigate();
+
     const username = authContext.username;
 
     useEffect(
@@ -22,13 +24,15 @@ export default function TodoComponent() {
     )
 
     function retrieveTodos() {
-        retrieveTodoApi(username, id)
-            .then(response => {
-                setDescription(response.data.description);
-                setTargetDate(response.data.targetDate);
-                console.log(response);
-            })
-            .catch(error => console.log(error));
+        if(id != -1){
+            retrieveTodoApi(username, id)
+                .then(response => {
+                    setDescription(response.data.description);
+                    setTargetDate(response.data.targetDate);
+                    console.log(response);
+                })
+                .catch(error => console.log(error));
+        }
     }
 
     function handleDescriptionChange(event) {
@@ -41,11 +45,24 @@ export default function TodoComponent() {
 
     function onSubmit(event) {
         event.preventDefault();
-        console.log(description + targetDate);
         if (description.length < 4 ) {
             setDescriptionError(true);
         } else {
             setDescriptionError(false);
+            const todo ={
+                id: id,
+                username: username,
+                description: description,
+                targetDate: targetDate,
+                done: false
+
+            };
+            console.log(todo);
+            updateTodoApi(username, id, todo)
+            .then(response => {
+                navigate('/todos');
+            })
+            .catch(error => console.log(error));;
         }
     }
 
@@ -55,11 +72,15 @@ export default function TodoComponent() {
             <div>
                 {descriptionError && <div className="alert alert-danger">Enter atleast 4 characters for a description</div>}
                 <form onSubmit={onSubmit}>
-                    <label>Description</label>
-                    <input type="text" name="description" value={description} onChange={handleDescriptionChange}/>
-                    <label>Target Date</label>
-                    <input type="date" name="targetDate" value={targetDate} onChange={handleTargetDateChange}/>
-                    <button type="submit" >Save</button>
+                    <div className="form-group">
+                        <label for="description">Description</label>
+                        <input className="form-control" type="text" name="description" value={description} onChange={handleDescriptionChange}/>
+                    </div>
+                    <div className="form-group">
+                        <label for="targetDate">Target Date</label>
+                        <input className="form-control" type="date" name="targetDate" value={targetDate} onChange={handleTargetDateChange}/>
+                    </div>   
+                    <button className="btn btn-primary mt-3" type="submit" >Save</button>  
                 </form>
             </div>
         </div>
