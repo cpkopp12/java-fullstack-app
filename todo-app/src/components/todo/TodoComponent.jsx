@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom"
-import { retrieveTodoApi, updateTodoApi } from "./api/TodoApiService";
+import { createTodoApi, retrieveTodoApi, updateTodoApi } from "./api/TodoApiService";
 import { useAuth } from './security/AuthContext';
 import { useEffect, useState } from "react";
 
@@ -49,20 +49,30 @@ export default function TodoComponent() {
             setDescriptionError(true);
         } else {
             setDescriptionError(false);
-            const todo ={
-                id: id,
-                username: username,
-                description: description,
-                targetDate: targetDate,
-                done: false
+                const todo ={
+                    id: id,
+                    username: username,
+                    description: description,
+                    targetDate: targetDate,
+                    done: false
 
-            };
-            console.log(todo);
-            updateTodoApi(username, id, todo)
-            .then(response => {
-                navigate('/todos');
-            })
-            .catch(error => console.log(error));;
+                };
+                console.log(todo);
+            if (id == -1) {
+                createTodoApi(username, todo)
+                    .then(response => {
+                        navigate('/todos');
+                    })
+                    .catch(error => console.log(error));
+            } else {
+                
+                updateTodoApi(username, id, todo)
+                    .then(response => {
+                        navigate('/todos');
+                    })
+                    .catch(error => console.log(error));
+            }
+            
         }
     }
 
@@ -73,11 +83,11 @@ export default function TodoComponent() {
                 {descriptionError && <div className="alert alert-danger">Enter atleast 4 characters for a description</div>}
                 <form onSubmit={onSubmit}>
                     <div className="form-group">
-                        <label for="description">Description</label>
+                        <label>Description</label>
                         <input className="form-control" type="text" name="description" value={description} onChange={handleDescriptionChange}/>
                     </div>
                     <div className="form-group">
-                        <label for="targetDate">Target Date</label>
+                        <label>Target Date</label>
                         <input className="form-control" type="date" name="targetDate" value={targetDate} onChange={handleTargetDateChange}/>
                     </div>   
                     <button className="btn btn-primary mt-3" type="submit" >Save</button>  
